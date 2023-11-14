@@ -1,0 +1,27 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8080
+url:
+  base: http://localhost:8080
+
+DYNAMODB_TABLE_NAME: ps-dynamodb-spring-boot-microbadge
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        security: DEBUG
+        web: INFO
+      hibernate: WARN
+      apache:
+        commons:
+          dbcp2: DEBUG
+
+management:
+  endpoint:
+    health:
+      enabled: false
