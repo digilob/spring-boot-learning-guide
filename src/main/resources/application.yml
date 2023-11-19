@@ -2,6 +2,17 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: mysecretpassword
+    driver-class-name: org.postgresql.Driver
+    hikari:
+        connection-timeout: 30000
+        maximum-pool-size: 10
+        idle-timeout: 600000
+        pool-name: my-hikari-pool
+
 server:
   port: 8080
 url:
@@ -32,3 +43,5 @@ management:
     health:
       enabled: true
       show-details: always
+      probes:
+        enabled: true
