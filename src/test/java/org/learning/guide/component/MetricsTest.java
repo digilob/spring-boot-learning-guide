@@ -1,4 +1,4 @@
-package org.learning.guide.web;
+package org.learning.guide.component;
 
 import org.learning.guide.schema.Metrics;
 import org.junit.jupiter.api.Test;

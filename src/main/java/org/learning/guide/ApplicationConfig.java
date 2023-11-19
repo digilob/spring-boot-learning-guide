@@ -1,4 +1,4 @@
-package org.learning.guide.config;
+package org.learning.guide;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

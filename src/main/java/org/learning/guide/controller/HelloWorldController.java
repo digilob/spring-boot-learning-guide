@@ -1,4 +1,4 @@
-package org.learning.guide.web;
+package org.learning.guide.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

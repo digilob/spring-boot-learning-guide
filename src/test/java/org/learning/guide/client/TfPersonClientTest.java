@@ -1,7 +1,7 @@
 package org.learning.guide.client;
 
 import org.learning.guide.resource.TfPerson;
-import org.learning.guide.web.BaseComponent;
+import org.learning.guide.component.BaseComponent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

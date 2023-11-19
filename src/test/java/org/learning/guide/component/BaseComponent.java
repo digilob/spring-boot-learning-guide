@@ -1,4 +1,4 @@
-package org.learning.guide.web;
+package org.learning.guide.component;
 
 import org.learning.guide.ApplicationTestConfig;
 import org.learning.guide.PostgresqlDockerContainer;
