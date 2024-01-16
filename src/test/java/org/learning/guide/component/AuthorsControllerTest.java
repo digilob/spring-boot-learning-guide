@@ -47,8 +47,7 @@ public class AuthorsControllerTest extends BaseComponent {
         Author responseAuthor = authorsResponse.getBody();
 
         assertEquals(responseAuthor.getAuthorId(), Long.valueOf(authorHeaderId));
-        assertEquals(newAuthor.getFirstName(), responseAuthor.getFirstName());
-        assertEquals(newAuthor.getLastName(), responseAuthor.getLastName());
+        assertEquals(newAuthor.getAuthorName(), responseAuthor.getAuthorName());
     }
 
     @Test
@@ -62,7 +61,7 @@ public class AuthorsControllerTest extends BaseComponent {
         Long authorId = Long.valueOf(location.toString());
 
         Author requestedAuthor = getAuthor(authorId);
-        requestedAuthor.setFirstName("A New First Name");
+        requestedAuthor.setAuthorName("A New First Name");
         ResponseEntity<String> updateEntity =
                 testRestTemplate.exchange(RequestEntity.put(getAuthorsUri(authorId))
                         .accept(MediaType.APPLICATION_JSON)
@@ -70,7 +69,7 @@ public class AuthorsControllerTest extends BaseComponent {
         assertEquals(HttpStatus.NO_CONTENT, updateEntity.getStatusCode());
 
         Author updatedAuthor = getAuthor(authorId);
-        assertEquals("A New First Name", updatedAuthor.getFirstName());
+        assertEquals("A New First Name", updatedAuthor.getAuthorName());
     }
 
     @Test
@@ -110,8 +109,7 @@ public class AuthorsControllerTest extends BaseComponent {
 
     private Author makeDefaultAuthor() {
         Author authorEntity = new Author();
-        authorEntity.setFirstName("Ellen");
-        authorEntity.setLastName("Weiss");
+        authorEntity.setAuthorName("Ellen Weiss");
         return authorEntity;
     }
 

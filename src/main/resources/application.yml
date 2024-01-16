@@ -18,6 +18,10 @@ server:
 url:
   base: http://localhost:8080
 
+openlibrary:
+  root:
+    url: https://openlibrary.org
+
 DYNAMODB_TABLE_NAME: ps-dynamodb-spring-boot-microbadge
 
 logging:

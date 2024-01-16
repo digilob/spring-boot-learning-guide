@@ -1,17 +1,15 @@
 package org.learning.guide.service;
 
-import org.learning.guide.controller.schema.Author;
 import org.learning.guide.controller.schema.Book;
-import org.learning.guide.domain.AuthorEntity;
 import org.learning.guide.domain.BookEntity;
 import org.learning.guide.domain.BooksRepository;
+import org.learning.guide.exception.BookNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,16 +25,13 @@ public class BookService {
 
   @Transactional
   public void updateBook(Long bookId, Book book) {
-    BookEntity bookEntity = booksRepository.findById(bookId).orElseThrow();
+    BookEntity bookEntity = booksRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId, "Book not found"));
     bookEntity.bookTitle(book.getBookTitle());
     bookEntity.bookCategory(book.getBookCategory());
     bookEntity.publishDate(book.getPublishDate());
-
-    if (Objects.equals(book.getAuthorId(), bookEntity.author().id())) {
-      // ToDo read authors table and update the author
-    }
-
+    bookEntity.authorId(book.getAuthorId());
     bookEntity.updatedTimestamp(Instant.now());
+
     booksRepository.save(bookEntity);
   }
 
@@ -82,7 +77,7 @@ public class BookService {
   }
 
   public Book getBook(Long bookId) {
-    return map(booksRepository.findById(bookId).orElseThrow());
+    return map(booksRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId, "Book not found")));
   }
 
   private Book map(BookEntity bookEntity) {
@@ -93,18 +88,5 @@ public class BookService {
     book.setPublishDate(bookEntity.publishDate());
     book.setAuthorId(bookEntity.authorId());
     return book;
-  }
-
-  private Author map(AuthorEntity authorEntity) {
-    if (authorEntity != null) {
-      Author author = new Author();
-      author.setFirstName(authorEntity.authorFirstName());
-      author.setLastName(authorEntity.authorLastName());
-      author.setAuthorId(authorEntity.id());
-      return author;
-    }
-    else {
-      return null;
-    }
   }
 }

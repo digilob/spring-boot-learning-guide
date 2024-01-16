@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import org.learning.guide.client.SessionHelper;
-import org.learning.guide.client.SessionHelperForTesting;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
@@ -16,11 +14,6 @@ import javax.sql.DataSource;
 @TestConfiguration
 @EnableAutoConfiguration
 public class ApplicationTestConfig {
-
-  @Bean
-  public SessionHelper sessionHelper() {
-    return new SessionHelperForTesting(null);
-  }
 
   @Bean
   @Qualifier("dataSource")

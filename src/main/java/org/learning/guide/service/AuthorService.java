@@ -50,24 +50,21 @@ public class AuthorService {
   @Transactional
   public void updateAuthor(Long authorId, Author author) {
     AuthorEntity authorEntity = authorsRepository.findById(authorId).get();
-    authorEntity.authorFirstName(author.getFirstName());
-    authorEntity.authorLastName(author.getLastName());
+    authorEntity.authorName(author.getAuthorName());
     authorEntity.updatedTimestamp(Instant.now());
     authorsRepository.save(authorEntity);
   }
 
   private AuthorEntity mapToEntity(Author author) {
     AuthorEntity authorEntity = new AuthorEntity();
-    authorEntity.authorFirstName(author.getFirstName());
-    authorEntity.authorLastName(author.getLastName());
+    authorEntity.authorName(author.getAuthorName());
     authorEntity.id(author.getAuthorId());
     return authorEntity;
   }
 
   private Author mapToSchema(AuthorEntity authorEntity) {
     Author author = new Author();
-    author.setFirstName(authorEntity.authorFirstName());
-    author.setLastName(authorEntity.authorLastName());
+    author.setAuthorName(authorEntity.authorName());
     author.setAuthorId(authorEntity.id());
     return author;
   }

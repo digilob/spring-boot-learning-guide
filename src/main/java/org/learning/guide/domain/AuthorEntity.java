@@ -19,11 +19,8 @@ public class AuthorEntity implements Serializable {
   @Id
   private Long id;
 
-  @Column("author_first_name")
-  private String authorFirstName;
-
-  @Column("author_last_name")
-  private String authorLastName;
+  @Column("author_name")
+  private String authorName;
 
   @Column("created_timestamp")
   private Instant createdTimestamp;

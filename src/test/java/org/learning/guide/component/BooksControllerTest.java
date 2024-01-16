@@ -113,7 +113,6 @@ public class BooksControllerTest extends BaseComponent {
 //  private AuthorEntity makeDefaultAuthorEntity() {
 //    AuthorEntity authorEntity = new AuthorEntity();
 //    authorEntity.authorFirstName("Ellen");
-//    authorEntity.authorLastName("Weiss");
 //    return authorEntity;
 //  }
 

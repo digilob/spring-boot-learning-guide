@@ -127,23 +127,7 @@ To begin, we will jump-start by creating an initial maven project with a Spring 
     >       return null;
     >     }
     >     return personSummaryMapper.map(person);
-* Re-run the tests in _PersonSummaryControllerTest_ class. All tests should now be passing.     
-
-## 5. Why Make Multiple Calls?
-* Run the tests in _PersonSummaryControllerWithCachingTest_ class. All tests should fail.     
-* Add the following annotation to the _PersonSummaryService_ class's _getOrCalculate_ method:
-    >     @Cacheable(value="personSummaryCache", key="#personId", unless="#result == null")
-* This indicates to Spring that we will be using the _personSummaryCache_ bean to cache the results of any call to the _getOrCalculate_ method
-    and that the key into that cache will be the personId
-* Run _PersonSummaryControllerWithCachingTest_ tests again. The _getPersonCached_ test should still fail... 
-    This is because our spring boot app does not know we want caching enabled.
-* Add the following annotation to the _Application.java_ class:
-    >     @EnableCaching
-* Run _PersonSummaryControllerWithCachingTest_ tests again. The getPersonCached test should now pass, but _getPersonAfterDeletion_ test still fails.
-* Open _PersonSummaryService_ and add a new field called _personSummaryCache_, and add it as a constructor parameter
-* In the _deletePersonSummary_ instead of just returning, perform the following:
-    >     personSummaryCache.evict(personId);    
-* Run _PersonSummaryControllerWithCachingTest_ tests again, and verify that all the tests are now passing.
+* Re-run the tests in _PersonSummaryControllerTest_ class. All tests should now be passing.
 
 ## 6. Application Healthcheck Expanded!
 * Run tests for _DynamoDbHealthTest_ - tests should fail.

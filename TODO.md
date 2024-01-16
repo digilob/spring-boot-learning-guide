@@ -19,6 +19,7 @@
 - POST /books - add book to our database (implement check before insert to verify if the author is real)
   - check if author exists by calling https://openlibrary.org/search/authors.json?q=rowling (use @Cacheable)
   - if author exists store data in our database
+  - https://openlibrary.org/developers/api
 - PUT /books/{id}
   - modify a book in our database
 - DELETE /books/{id}
