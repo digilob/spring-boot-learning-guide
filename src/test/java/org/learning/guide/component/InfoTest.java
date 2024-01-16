@@ -10,18 +10,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InfoTest extends BaseComponent {
 
   @Test
-  public void getInfoTest() {
+  public void getInfoTest_appDetails() {
     ResponseEntity<Info> responseEntity = testRestTemplate.getForEntity(getInfoUrl(), Info.class);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody().getInfoDetails())
       .as("Spring-Boot Microbadge info details should be present")
-      .hasFieldOrPropertyWithValue("name", "spring-boot-microbadge")
-      .hasFieldOrPropertyWithValue("description", "Demo project for Spring Boot")
+      .hasFieldOrPropertyWithValue("name", "spring-boot-learning-guide")
+      .hasFieldOrPropertyWithValue("description", "Spring Boot introductory learning guide")
       .hasFieldOrPropertyWithValue("version", "0.0.1-SNAPSHOT");
   }
 
+  @Test
+  public void getInfoTest_javaDetails() {
+    ResponseEntity<Info> responseEntity = testRestTemplate.getForEntity(getInfoUrl(), Info.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getJavaDetails())
+      .as("Spring-Boot Microbadge java details should be present")
+      .hasFieldOrProperty("version");
+  }
+
   private String getInfoUrl() {
-    return urlFactoryForTesting.getMgmtUrl() + "info";
+    return urlFactoryForTesting.getMgmtUrl() + "/actuator/info";
   }
 }

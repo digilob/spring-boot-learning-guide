@@ -1,47 +1,29 @@
 package org.learning.guide.schema;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Info {
+  @JsonProperty(value = "app")
   private InfoDetails infoDetails;
 
-  @JsonProperty(value = "app")
-  public InfoDetails getInfoDetails() {
-    return infoDetails;
-  }
+  @JsonProperty(value = "java")
+  private JavaDetails javaDetails;
 
-  public void setInfoDetails(InfoDetails infoDetails) {
-    this.infoDetails = infoDetails;
-  }
-
-
-  public class InfoDetails {
+  @Getter
+  @Setter
+  public static class InfoDetails {
     String name;
     String description;
     String version;
+  }
 
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public void setDescription(String description) {
-      this.description = description;
-    }
-
-    public String getVersion() {
-      return version;
-    }
-
-    public void setVersion(String version) {
-      this.version = version;
-    }
+  @Getter
+  @Setter
+  public static class JavaDetails {
+    String version;
   }
 }

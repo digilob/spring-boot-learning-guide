@@ -19,7 +19,10 @@ public class OpenLibraryClientTest extends BaseComponent {
     OpenLibraryResource openLibraryResource = openLibraryClient.findAuthor(authorName);
 
     assertThat(openLibraryResource.getNumFound())
-        .as("Lets use RestTemplate to get the data back from TF")
+        .as("Verify the number of results is 1")
+        .isEqualTo(1);
+    assertThat(openLibraryResource.getDocs().get(0).getName())
+        .as("Verify the author name is correct")
         .isEqualTo(authorName);
   }
 }
