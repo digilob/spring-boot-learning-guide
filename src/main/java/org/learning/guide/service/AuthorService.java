@@ -22,7 +22,12 @@ public class AuthorService {
 
   @Transactional
   public Author createAuthor(Author author) {
-    AuthorEntity authorEntity = authorsRepository.save(mapToEntity(author));
+    Instant now = Instant.now();
+    AuthorEntity entity = mapToEntity(author);
+    entity.createdTimestamp(now);
+    entity.updatedTimestamp(now);
+
+    AuthorEntity authorEntity = authorsRepository.save(entity);
     return mapToSchema(authorEntity);
   }
 

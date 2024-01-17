@@ -94,10 +94,12 @@ public class AuthorsControllerTest extends BaseComponent {
     }
 
     private Author getAuthor(Long authorId) {
-        return testRestTemplate.exchange(RequestEntity.get(getAuthorsUri(authorId))
-                        .accept(MediaType.APPLICATION_JSON)
-                        .build(), Author.class)
-                .getBody();
+        ResponseEntity<Author> exchange = testRestTemplate.exchange(RequestEntity.get(getAuthorsUri(authorId))
+                .accept(MediaType.APPLICATION_JSON)
+                .build(), Author.class);
+
+        assertTrue(exchange.getStatusCode().is2xxSuccessful() || exchange.getStatusCode().value() == 404);
+        return exchange.getBody();
     }
 
     private ResponseEntity<String> getAuthorResponse(Long authorId) {

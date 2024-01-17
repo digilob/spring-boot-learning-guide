@@ -14,6 +14,7 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BooksControllerTest extends BaseComponent {
@@ -105,9 +106,12 @@ public class BooksControllerTest extends BaseComponent {
   }
 
   private Book getBook(Long bookId) {
-    return testRestTemplate.exchange(RequestEntity.get(getBooksUri(bookId))
+    ResponseEntity<Book> exchange = testRestTemplate.exchange(RequestEntity.get(getBooksUri(bookId))
             .accept(MediaType.APPLICATION_JSON)
-            .build(), Book.class).getBody();
+            .build(), Book.class);
+
+    assertTrue(exchange.getStatusCode().is2xxSuccessful() || exchange.getStatusCode().value() == 404);
+    return exchange.getBody();
   }
 
   private Book makeDefaultBook() {
