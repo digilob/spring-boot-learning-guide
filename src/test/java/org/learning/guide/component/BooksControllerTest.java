@@ -23,6 +23,14 @@ public class BooksControllerTest extends BaseComponent {
 
   @Test
   void testGetBooks_emptyList() {
+    getAllBooks().forEach(book -> {
+      ResponseEntity<String> deleteEntity =
+              testRestTemplate.exchange(RequestEntity.delete(getBooksUri(book.getId()))
+                      .accept(MediaType.APPLICATION_JSON)
+                      .build(), String.class);
+      assertEquals(HttpStatus.NO_CONTENT, deleteEntity.getStatusCode());
+    });
+
     ResponseEntity<Books> booksResponseEntity =
             testRestTemplate.exchange(RequestEntity.get(getBooksUri())
                     .accept(MediaType.APPLICATION_JSON)
@@ -41,10 +49,11 @@ public class BooksControllerTest extends BaseComponent {
                     .accept(MediaType.APPLICATION_JSON)
                     .body(book), Books.class);
     assertEquals(HttpStatus.CREATED, booksResponseEntity.getStatusCode());
-    List<Book> allBooks = getAllBooks();
-    assertEquals(1, allBooks.size());
-    assertEquals("Tales From the Crypt", allBooks.get(0).getBookTitle());
-    assertEquals("Fiction", allBooks.get(0).getBookCategory());
+
+    URI location = booksResponseEntity.getHeaders().getLocation();
+    Book foundBook = getBook(Long.valueOf(location.toString()));
+    assertEquals("Tales From the Crypt", foundBook.getBookTitle());
+    assertEquals("Fiction", foundBook.getBookCategory());
   }
 
   @Test
@@ -85,8 +94,8 @@ public class BooksControllerTest extends BaseComponent {
                     .accept(MediaType.APPLICATION_JSON)
                     .build(), String.class);
     assertEquals(HttpStatus.NO_CONTENT, deleteEntity.getStatusCode());
-    List<Book> allBooks = getAllBooks();
-    assertEquals(0, allBooks.size());
+    Book allBooks = getBook(bookId);
+    assertEquals(new Book(), allBooks);
   }
 
   private List<Book> getAllBooks() {
@@ -110,18 +119,12 @@ public class BooksControllerTest extends BaseComponent {
     return book;
   }
 
-//  private AuthorEntity makeDefaultAuthorEntity() {
-//    AuthorEntity authorEntity = new AuthorEntity();
-//    authorEntity.authorFirstName("Ellen");
-//    return authorEntity;
-//  }
-
   private String getBooksUri(Long bookId) {
     return getBooksUri() + "/" + bookId;
   }
 
   private String getBooksUri() {
-    String port = springEnvironment.getProperty("local.server.port", "5000");
+    String port = springEnvironment.getProperty("local.server.port", "8080");
     return "http://localhost:" + port + "/books";
   }
 }

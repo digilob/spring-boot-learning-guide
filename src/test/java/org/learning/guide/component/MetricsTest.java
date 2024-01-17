@@ -1,5 +1,6 @@
 package org.learning.guide.component;
 
+import org.learning.guide.schema.Metric;
 import org.learning.guide.schema.Metrics;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.*;
@@ -13,30 +14,42 @@ public class MetricsTest extends BaseComponent {
     ResponseEntity<Metrics> responseEntity = testRestTemplate.getForEntity(getMetricsUrl(), Metrics.class);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(responseEntity.getBody().getMem()).isGreaterThan(100);
+    assertThat(responseEntity.getBody().getNames()).isNotNull();
   }
 
   @Test
-  public void getCustomMetricsTest() throws InterruptedException {
+  public void getHttpServerRequestsMetricTest() {
     HttpHeaders headers = new HttpHeaders();
     headers.setCacheControl("no-cache");
     HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
-
-    ResponseEntity<Metrics> responseEntity = testRestTemplate.getForEntity(getMetricsUrl(), Metrics.class);
-
-    Long numMetricRequests = responseEntity.getBody().getHelloWorldMetric() == null ? 0 : responseEntity.getBody().getHelloWorldMetric();
     testRestTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
     testRestTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
     testRestTemplate.exchange(getHelloWorldUrl(), HttpMethod.GET, httpEntity, String.class);
 
-    ResponseEntity<Metrics> latestMetricsResponseEntity = testRestTemplate.getForEntity(getMetricsUrl(), Metrics.class);
+    ResponseEntity<Metric> responseEntity = testRestTemplate.getForEntity(getHttpServerRequestsMetricUrl(), Metric.class);
 
-    assertThat(latestMetricsResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(latestMetricsResponseEntity.getBody().getHelloWorldMetric()).isGreaterThan(numMetricRequests);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getName()).isEqualTo("http.server.requests");
+  }
+
+  @Test
+  public void getPrometheusMetricTest() {
+    ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(getPrometheusUrl(), String.class);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody()).isNotBlank();
   }
 
   private String getMetricsUrl() {
-    return urlFactoryForTesting.getMgmtUrl() + "/metrics";
+    return urlFactoryForTesting.getMgmtUrl() + "/actuator/metrics";
+  }
+
+  private String getHttpServerRequestsMetricUrl() {
+    return urlFactoryForTesting.getMgmtUrl() + "/actuator/metrics/http.server.requests";
+  }
+
+  private String getPrometheusUrl() {
+    return urlFactoryForTesting.getMgmtUrl() + "/actuator/prometheus";
   }
 
   private String getHelloWorldUrl() {

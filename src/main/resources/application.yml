@@ -40,7 +40,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus
+      base-path: /actuator
 
   health:
     db:
@@ -59,6 +60,11 @@ management:
       enabled: true
     env:
       enabled: true
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 info:
   app:

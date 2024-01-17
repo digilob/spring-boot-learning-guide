@@ -31,8 +31,6 @@ public class BookEntity implements Serializable {
   @Column("author_id")
   private Long authorId;
 
-  private AuthorEntity author;
-
   @Column("created_timestamp")
   private Instant createdTimestamp;
 
