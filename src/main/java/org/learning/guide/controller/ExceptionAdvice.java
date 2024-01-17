@@ -27,8 +27,6 @@ public class ExceptionAdvice {
         return "{}";
     }
 
-    @ExceptionHandler(OlAuthorNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleOlAuthorNotFound(OlAuthorNotFoundException ex) {
         return "{}";
     }

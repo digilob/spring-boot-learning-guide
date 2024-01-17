@@ -40,34 +40,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include:
+        exclude: health,info,metrics,prometheus
       base-path: /actuator
-
-  health:
-    db:
-      enabled: true
-    diskspace:
-      enabled: true
-
-  endpoint:
-    health:
-      enabled: true
-      show-details: always
-      probes:
-        enabled: true
-  info:
-    java:
-      enabled: true
-    env:
-      enabled: true
-
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-
-info:
-  app:
-    name: @project.artifactId@
-    description: @project.description@
-    version: @project.version@

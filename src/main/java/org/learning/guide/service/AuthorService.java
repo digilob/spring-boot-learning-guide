@@ -40,10 +40,6 @@ public class AuthorService {
   }
 
   private void verifyAuthorName(Author author) {
-    OpenLibraryResource olAuthor = openLibraryClient.findAuthor(author.getAuthorName());
-    if (olAuthor.getNumFound() == 0) {
-      throw new OlAuthorNotFoundException(author.getAuthorName());
-    }
   }
 
   @Transactional
