@@ -1,9 +1,12 @@
 package org.learning.guide.service;
 
+import org.learning.guide.client.OpenLibraryClient;
 import org.learning.guide.controller.schema.Author;
 import org.learning.guide.controller.schema.Authors;
 import org.learning.guide.domain.AuthorEntity;
 import org.learning.guide.domain.AuthorsRepository;
+import org.learning.guide.exception.OlAuthorNotFoundException;
+import org.learning.guide.resource.OpenLibraryResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +19,17 @@ import java.util.stream.StreamSupport;
 public class AuthorService {
   private AuthorsRepository authorsRepository;
 
-  public AuthorService(AuthorsRepository authorsRepository) {
+  private OpenLibraryClient openLibraryClient;
+
+  public AuthorService(AuthorsRepository authorsRepository, OpenLibraryClient openLibraryClient) {
     this.authorsRepository = authorsRepository;
+    this.openLibraryClient = openLibraryClient;
   }
 
   @Transactional
   public Author createAuthor(Author author) {
+    verifyAuthorName(author);
+
     Instant now = Instant.now();
     AuthorEntity entity = mapToEntity(author);
     entity.createdTimestamp(now);
@@ -29,6 +37,13 @@ public class AuthorService {
 
     AuthorEntity authorEntity = authorsRepository.save(entity);
     return mapToSchema(authorEntity);
+  }
+
+  private void verifyAuthorName(Author author) {
+    OpenLibraryResource olAuthor = openLibraryClient.findAuthor(author.getAuthorName());
+    if (olAuthor.getNumFound() == 0) {
+      throw new OlAuthorNotFoundException(author.getAuthorName());
+    }
   }
 
   @Transactional

@@ -15,7 +15,8 @@ public class OpenLibraryClientTest extends BaseComponent {
 
   @Test
   public void testOpenLibraryClientReturnsCorrectly() {
-    String authorName = createDefaultAuthor();
+    String authorName = "J. K. Rowling";
+    mockOlAuthorRequest(authorName);
     OpenLibraryResource openLibraryResource = openLibraryClient.findAuthor(authorName);
 
     assertThat(openLibraryResource.getNumFound())

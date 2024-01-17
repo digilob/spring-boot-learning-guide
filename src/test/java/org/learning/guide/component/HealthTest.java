@@ -29,6 +29,13 @@ public class HealthTest extends BaseComponent {
     assertThat(compositHealth.getComponents().get("diskSpace").getStatus()).isEqualTo(Status.UP);
   }
 
+  @Test
+  public void getReadinessProbeTest() {
+    ResponseEntity<HealthResponse> responseEntity = testRestTemplate.getForEntity(getHealthcheckUrl() + "/readiness", HealthResponse.class);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(responseEntity.getBody().getStatus()).isEqualTo(Status.UP);
+  }
+
   private String getHealthcheckUrl() {
     return urlFactoryForTesting.getMgmtUrl() + "/actuator/health";
   }

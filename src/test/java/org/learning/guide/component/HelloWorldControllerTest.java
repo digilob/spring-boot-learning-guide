@@ -15,6 +15,15 @@ public class HelloWorldControllerTest extends BaseComponent {
     assertThat(responseEntity.getStatusCode())
         .as("Make sure you have the @RestController configured properly")
         .isEqualTo(HttpStatus.OK);
+  }
+
+  @Test
+  public void getHelloWorldVerifyString() {
+    ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/hello", String.class);
+
+    assertThat(responseEntity.getStatusCode())
+        .as("Make sure you have the @RestController configured properly")
+        .isEqualTo(HttpStatus.OK);
     assertThat(responseEntity.getBody())
         .as("Make sure are returning the proper value 'Hello!'")
         .contains("Hello!");

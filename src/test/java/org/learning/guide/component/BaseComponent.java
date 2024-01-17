@@ -3,6 +3,7 @@ package org.learning.guide.component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.guide.ApplicationTestConfig;
 import org.learning.guide.PostgresqlDockerContainer;
@@ -19,6 +20,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -43,19 +45,51 @@ public abstract class BaseComponent {
   @Autowired
   ObjectMapper objectMapper;
 
-  public String createDefaultAuthor() {
-    OpenLibraryResource openLibraryResource = createOpenLibraryResource("J. K. Rowling");
-      try {
-        stubFor(
-                WireMock.get(WireMock.urlEqualTo("/search/authors.json?q=J.%20K.%20Rowling&limit=1"))
-                        .willReturn(WireMock.aResponse()
-                                .withStatus(200)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody(objectMapper.writeValueAsString(openLibraryResource))));
-      } catch (JsonProcessingException e) {
-          throw new RuntimeException(e);
-      }
-      return "J. K. Rowling";
+  @SneakyThrows
+  public void mockOlAuthorRequest(String authorName) {
+    OpenLibraryResource openLibraryResource = createOpenLibraryResource(authorName);
+    String olSearchPath = UriComponentsBuilder.fromUriString("/search/authors.json")
+            .queryParam("q", authorName)
+            .queryParam("limit", 1)
+            .build()
+            .encode()
+            .toUriString();
+
+    try {
+      stubFor(
+              WireMock.get(WireMock.urlEqualTo(olSearchPath))
+                      .willReturn(WireMock.aResponse()
+                              .withStatus(200)
+                              .withHeader("Content-Type", "application/json")
+                              .withBody(objectMapper.writeValueAsString(openLibraryResource))));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @SneakyThrows
+  public void mockOlAuthorRequestNoAuthor(String authorName) {
+    OpenLibraryResource openLibraryResource = new OpenLibraryResource();
+    openLibraryResource.setNumFound(0);
+    openLibraryResource.setDocs(List.of());
+
+    String olSearchPath = UriComponentsBuilder.fromUriString("/search/authors.json")
+            .queryParam("q", authorName)
+            .queryParam("limit", 1)
+            .build()
+            .encode()
+            .toUriString();
+
+    try {
+      stubFor(
+              WireMock.get(WireMock.urlEqualTo(olSearchPath))
+                      .willReturn(WireMock.aResponse()
+                              .withStatus(200)
+                              .withHeader("Content-Type", "application/json")
+                              .withBody(objectMapper.writeValueAsString(openLibraryResource))));
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private OpenLibraryResource createOpenLibraryResource(String authorName) {
@@ -69,12 +103,12 @@ public abstract class BaseComponent {
 
   private List<OpenLibraryDocResource> createDocs(String authorName) {
     OpenLibraryDocResource openLibraryDocResource = new OpenLibraryDocResource();
-    openLibraryDocResource.setKey("OL23919A");
+    openLibraryDocResource.setKey(String.valueOf(authorName.hashCode()));
     openLibraryDocResource.setType("author");
     openLibraryDocResource.setName(authorName);
     openLibraryDocResource.setBirthDate("31 July 1965");
-    openLibraryDocResource.setTopWork("Harry Potter and the Philosopher's Stone");
-    openLibraryDocResource.setWorkCount(474);
+    openLibraryDocResource.setTopWork(authorName + " most popular book");
+    openLibraryDocResource.setWorkCount(25);
     return List.of(openLibraryDocResource);
   }
 

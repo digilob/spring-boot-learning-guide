@@ -34,11 +34,13 @@ public class AuthorsControllerTest extends BaseComponent {
 
     @Test
     public void testCreateAuthors() {
-        Author newAuthor = makeDefaultAuthor();
+        Author author = makeAuthorResource();
+        mockOlAuthorRequest(author.getAuthorName());
+
         ResponseEntity<Author> authorsResponse =
                 testRestTemplate.exchange(RequestEntity.post(getAuthorsUri())
                         .accept(MediaType.APPLICATION_JSON)
-                        .body(newAuthor), Author.class);
+                        .body(author), Author.class);
         assertEquals(HttpStatus.CREATED, authorsResponse.getStatusCode());
 
         assertNotNull(authorsResponse.getHeaders().getLocation());
@@ -47,15 +49,31 @@ public class AuthorsControllerTest extends BaseComponent {
         Author responseAuthor = authorsResponse.getBody();
 
         assertEquals(responseAuthor.getAuthorId(), Long.valueOf(authorHeaderId));
-        assertEquals(newAuthor.getAuthorName(), responseAuthor.getAuthorName());
+        assertEquals(author.getAuthorName(), responseAuthor.getAuthorName());
+    }
+
+    @Test
+    public void testCreateAuthors_OLSearchFails() {
+        Author author = makeAuthorResource("some random author name");
+        mockOlAuthorRequestNoAuthor(author.getAuthorName());
+
+        ResponseEntity<Author> authorsResponse =
+                testRestTemplate.exchange(RequestEntity.post(getAuthorsUri())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .body(author), Author.class);
+        assertEquals(HttpStatus.BAD_REQUEST, authorsResponse.getStatusCode());
+        assertNull(authorsResponse.getHeaders().getLocation());
     }
 
     @Test
     public void testPutAuthors() {
+        Author author = makeAuthorResource();
+        mockOlAuthorRequest(author.getAuthorName());
+
         ResponseEntity<Author> authorsResponseEntity =
                 testRestTemplate.exchange(RequestEntity.post(getAuthorsUri())
                         .accept(MediaType.APPLICATION_JSON)
-                        .body(makeDefaultAuthor()), Author.class);
+                        .body(author), Author.class);
         assertEquals(HttpStatus.CREATED, authorsResponseEntity.getStatusCode());
         URI location = authorsResponseEntity.getHeaders().getLocation();
         Long authorId = Long.valueOf(location.toString());
@@ -74,11 +92,13 @@ public class AuthorsControllerTest extends BaseComponent {
 
     @Test
     public void testDeleteAuthors() {
-        Author defaultAuthor = makeDefaultAuthor();
+        Author author = makeAuthorResource();
+        mockOlAuthorRequest(author.getAuthorName());
+
         ResponseEntity<String> authorsResponseEntity =
                 testRestTemplate.exchange(RequestEntity.post(getAuthorsUri())
                         .accept(MediaType.APPLICATION_JSON)
-                        .body(defaultAuthor), String.class);
+                        .body(author), String.class);
         assertEquals(HttpStatus.CREATED, authorsResponseEntity.getStatusCode());
         URI location = authorsResponseEntity.getHeaders().getLocation();
         Long authorId = Long.valueOf(location.toString());
@@ -109,9 +129,13 @@ public class AuthorsControllerTest extends BaseComponent {
     }
 
 
-    private Author makeDefaultAuthor() {
+    private Author makeAuthorResource() {
+        return makeAuthorResource("Ellen Weiss");
+    }
+
+    private Author makeAuthorResource(String authorName) {
         Author authorEntity = new Author();
-        authorEntity.setAuthorName("Ellen Weiss");
+        authorEntity.setAuthorName(authorName);
         return authorEntity;
     }
 

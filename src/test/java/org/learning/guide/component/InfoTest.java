@@ -10,6 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InfoTest extends BaseComponent {
 
   @Test
+  public void getInfoTest() {
+    ResponseEntity<Info> responseEntity = testRestTemplate.getForEntity(getInfoUrl(), Info.class);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+  }
+
+  @Test
   public void getInfoTest_appDetails() {
     ResponseEntity<Info> responseEntity = testRestTemplate.getForEntity(getInfoUrl(), Info.class);
 
