@@ -1,0 +1,20 @@
+replicaCount: 1
+
+image:
+  repository: localhost:5010/spring-boot-learning-guide
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+
+resources: {}

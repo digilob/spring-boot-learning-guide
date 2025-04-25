@@ -37,9 +37,19 @@ logging:
           dbcp2: DEBUG
 
 management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+      probes:
+        enabled: true
+      db:
+        enabled: true
+      diskspace:
+        enabled: true
   endpoints:
     web:
       exposure:
-        include:
-        exclude: health,info,metrics,prometheus
+        include: health
+        exclude: info,metrics,prometheus
       base-path: /actuator

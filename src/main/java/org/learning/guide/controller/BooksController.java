@@ -11,21 +11,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@RestController
+@RequestMapping("/books")
 public class BooksController {
 
   private BookService bookService;
 
+
   @Autowired
+
   public BooksController(BookService bookService) {
     this.bookService = bookService;
   }
 
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseStatus(code = HttpStatus.CREATED)
   public ResponseEntity createBook(@RequestBody Book book) {
     Long bookId = bookService.createBook(book);
     return ResponseEntity.created(URI.create(String.valueOf(bookId))).build();
   }
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{bookId}", produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(code = HttpStatus.OK)
   public Books getBooks() {
     return new Books(bookService.findAllBooks());

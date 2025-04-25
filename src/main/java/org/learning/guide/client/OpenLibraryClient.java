@@ -16,9 +16,20 @@ public class OpenLibraryClient {
 //  https://openlibrary.org/search/authors.json?q=J.%20K.%20Rowling&limit=1
 
   public OpenLibraryClient(@Value("${openlibrary.root.url}") String olRootUri, RestTemplateBuilder restTemplateBuilder) {
+    this.restTemplate = restTemplateBuilder.rootUri(olRootUri).build();
   }
-
   public OpenLibraryResource findAuthor(String authorName) {
-    return new OpenLibraryResource();
+    String searchUrl = UriComponentsBuilder.fromPath("/search/authors.json")
+        .queryParam("q", authorName)
+        .queryParam("limit", 1)
+         .build()
+         .toString();
+    try {
+      return restTemplate.getForObject(searchUrl, OpenLibraryResource.class);
+    } catch (HttpClientErrorException e) {
+      throw new OlAuthorNotFoundException("Author not found");
+    } catch (RestClientException e) {
+      throw new RuntimeException("Something went wrong");
+    }
   }
 }
